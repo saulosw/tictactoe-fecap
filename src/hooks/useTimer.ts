@@ -1,8 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 
 export const useTimer = (initialTime: number, onTimeout: () => void, isPaused: boolean) => {
     const [timeLeft, setTimeLeft] = useState(initialTime);
+    const onTimeoutRef = useRef(onTimeout);
+    onTimeoutRef.current = onTimeout;
 
     const resetTimer = useCallback(() => {
         setTimeLeft(initialTime);
@@ -12,7 +14,8 @@ export const useTimer = (initialTime: number, onTimeout: () => void, isPaused: b
         if (isPaused) return;
 
         if (timeLeft <= 0) {
-            onTimeout();
+            onTimeoutRef.current();
+            setTimeLeft(initialTime);
             return;
         }
 
@@ -21,7 +24,7 @@ export const useTimer = (initialTime: number, onTimeout: () => void, isPaused: b
         }, 1000);
 
         return () => clearTimeout(timerId);
-    }, [timeLeft, isPaused, onTimeout]);
+    }, [timeLeft, isPaused, initialTime]);
 
     return { timeLeft, resetTimer };
 };

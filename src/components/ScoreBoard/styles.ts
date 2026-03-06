@@ -1,5 +1,10 @@
-import { styled } from '@mui/material/styles';
+import { styled, keyframes } from '@mui/material/styles';
 
+const pulseGlow = keyframes`
+    0% { box-shadow: 0 0 20px rgba(74, 0, 130, 0.6); }
+    50% { box-shadow: 0 0 35px rgba(138, 43, 226, 0.9), 0 0 60px rgba(74, 0, 130, 0.4); }
+    100% { box-shadow: 0 0 20px rgba(74, 0, 130, 0.6); }
+`;
 
 export const ScoreBoardContainer = styled('div')({
     display: 'flex',
@@ -10,7 +15,7 @@ export const ScoreBoardContainer = styled('div')({
     gap: '1rem',
 });
 
-export const ScoreCard = styled('div')<{ $active: boolean; $player: 'X' | 'O' }>(({ $active }) => ({
+export const ScoreCard = styled('div')<{ $active: boolean; $player: 'X' | 'O'; $pulse?: boolean }>(({ $active, $pulse }) => ({
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
@@ -26,6 +31,10 @@ export const ScoreCard = styled('div')<{ $active: boolean; $player: 'X' | 'O' }>
         borderColor: '#4a0082',
         boxShadow: '0 0 20px rgba(74, 0, 130, 0.6)',
         transform: 'translateY(-5px) scale(1.05)',
+    }),
+
+    ...($active && $pulse && {
+        animation: `${pulseGlow} 0.5s ease-in-out 3`,
     }),
 }));
 

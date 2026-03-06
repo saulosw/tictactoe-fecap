@@ -1,3 +1,4 @@
+import { useState, useCallback } from 'react';
 import { useGameState } from '../../hooks/useGameState';
 import { useTimer } from '../../hooks/useTimer';
 import type { GameMode } from '../../types';
@@ -37,9 +38,12 @@ export const Game = ({ onReturnToMenu, gameMode }: GameProps) => {
         resetMatchAndScores,
     } = useGameState(gameMode);
 
-    const handleTimeout = () => {
+    const [pulseKey, setPulseKey] = useState(0);
+
+    const handleTimeout = useCallback(() => {
         forceSwitchTurn();
-    };
+        setPulseKey(prev => prev + 1);
+    }, [forceSwitchTurn]);
 
     const { timeLeft, resetTimer } = useTimer(
         TURN_DURATION,
@@ -70,7 +74,7 @@ export const Game = ({ onReturnToMenu, gameMode }: GameProps) => {
         <GameContainer>
             <GameTitle>TIC TAC TOE</GameTitle>
 
-            <ScoreBoard scores={scores} currentPlayer={currentPlayer} gameMode={gameMode} />
+            <ScoreBoard scores={scores} currentPlayer={currentPlayer} gameMode={gameMode} pulseKey={pulseKey} />
 
             <GameBoardWrapper>
                 <Board
